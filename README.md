@@ -22,9 +22,9 @@ go run .
 ### Relatório Final
 
 ### To Do
-[x] Criar o repositório
-[x] Encontrar um dataset (Etapa 1)
-[ ] Testes para ambas as etapas
-[ ] Etapa 2
-[ ] Etapa 3
-[ ] Etapa 4
+ - [x] Criar o repositório
+ - [x] Encontrar um dataset (Etapa 1)
+ - [ ] Testes para ambas as etapas
+ - [ ] Etapa 2
+ - [ ] Etapa 3
+ - [ ] Etapa 4
