@@ -1,10 +1,8 @@
-package read_dataset
+package utils
 
 import (
 	"encoding/csv"
-	"fmt"
 	"os"
-	"path/filepath"
 	"strconv"
 )
 
@@ -28,7 +26,7 @@ type Row struct {
     tratamenetoAdesao int
 }
 
-func mustConv(s string) int {
+func mustAtoi(s string) int {
     i, err := strconv.Atoi(s)
     if err != nil {
         panic(err)
@@ -36,9 +34,8 @@ func mustConv(s string) int {
     return i
 }
 
-func Read() []Row {
-    csvfile, err := os.Open(filepath.Join("dataset", "dataset.csv"))
-    fmt.Println("hello world")
+func ReadDataset(path string) []Row {
+    csvfile, err := os.Open(path)
     if err != nil {
         panic(err)
     }
@@ -55,21 +52,21 @@ func Read() []Row {
         }
         linha := Row {
             // Paciente ID
-            pacienteID: mustConv(r[0]),
+            pacienteID: mustAtoi(r[0]),
             // Idade
-            idade: mustConv(r[1]),
+            idade: mustAtoi(r[1]),
             // Sexo
             sexo: r[2],
             // Diagnóstico
             diagnostico: r[3],
             // Gravidade dos sintomas (1-10)
-            gravidadeSintomas: mustConv(r[4]),
+            gravidadeSintomas: mustAtoi(r[4]),
             // Nível do humor (1-10)
-            humor: mustConv(r[5]),
+            humor: mustAtoi(r[5]),
             // Qualidade do sono (1-10)
-            sonoQualidade: mustConv(r[6]),
+            sonoQualidade: mustAtoi(r[6]),
             // Atividade Física (hrs/semana)
-            atividadeFisica: mustConv(r[7]),
+            atividadeFisica: mustAtoi(r[7]),
             // Medicação
             medicacao: r[8],
             // Tipo de Terapia
@@ -77,17 +74,17 @@ func Read() []Row {
             // Início do Tratamento
             tratamentoInicio: r[10],
             // Duração do tratamento (semanas)
-            tratamentoDuracao: mustConv(r[11]),
+            tratamentoDuracao: mustAtoi(r[11]),
             // Nível de Estresse (1-10)
-            estresse: mustConv(r[12]),
+            estresse: mustAtoi(r[12]),
             // Resultado
             resultado: r[13],
             // Progresso do tratamento (1-10)
-            tratamentoProgresso: mustConv(r[14]),
+            tratamentoProgresso: mustAtoi(r[14]),
             // Estado emocional detectado por IA
             estadoEmocional: r[15],
             // Adesão ao tratamento (%)
-            tratamenetoAdesao: mustConv(r[16]),
+            tratamenetoAdesao: mustAtoi(r[16]),
         }
         rows = append(rows, linha)
     }
