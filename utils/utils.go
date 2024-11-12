@@ -4,6 +4,7 @@ import (
 	"encoding/csv"
 	"os"
 	"strconv"
+	"time"
 )
 
 type Row struct {
@@ -17,7 +18,7 @@ type Row struct {
     atividadeFisica int
     medicacao string
     terapiaTipo string
-    tratamentoInicio string
+    tratamentoInicio time.Time
     tratamentoDuracao int
     estresse int
     resultado string
@@ -50,6 +51,10 @@ func ReadDataset(path string) []Row {
         if len(r) != 17 {
             panic(r)
         }
+        tratamentoInicio, err := time.Parse(time.DateOnly, r[10])
+        if err != nil {
+            panic(err)
+        }
         linha := Row {
             // Paciente ID
             pacienteID: mustAtoi(r[0]),
@@ -72,7 +77,7 @@ func ReadDataset(path string) []Row {
             // Tipo de Terapia
             terapiaTipo: r[9],
             // Início do Tratamento
-            tratamentoInicio: r[10],
+            tratamentoInicio: tratamentoInicio,
             // Duração do tratamento (semanas)
             tratamentoDuracao: mustAtoi(r[11]),
             // Nível de Estresse (1-10)
