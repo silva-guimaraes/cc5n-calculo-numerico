@@ -26,14 +26,13 @@ func main() {
 		xValues[i] = float64(dataset[i].GravidadeSintomas)
 		yValues[i] = float64(dataset[i].Humor)
 
-		if xValues[i] == 0 || yValues[i] == 0 {
-			xValues[i] = 1.0
-			yValues[i] = 1.0
-		}
 	}
 
+	// xValues := []float64{1, 2, 2, 4}
+	// yValues := []float64{1, 4, 4, 16}
+
 	// Teste de interpolação para um valor de x (pode ser ajustado conforme necessário)
-	interpolatedValue := functions.NewtonInterpolation(xValues, yValues, 2.5)
+	interpolatedValue := functions.NewtonInterpolation(xValues, yValues, 9.8)
 
 	// Exibe o valor interpolado
 	fmt.Printf("Valor interpolado para x = 2.5: %.2f\n", interpolatedValue)
