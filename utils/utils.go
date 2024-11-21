@@ -4,6 +4,7 @@ import (
 	"encoding/csv"
 	"fmt"
 	"log"
+	"math"
 	"os"
 	"strconv"
 	"time"
@@ -65,8 +66,11 @@ func NovaMatrizVazia(largura, altura int) Matriz {
 }
 
 func (m Matriz) Copia() Matriz {
-	var copia []float64
-	copy(copia, m.elementos)
+    copia := make([]float64, m.Largura*m.Altura)
+    _ = copy(copia, m.elementos)
+    // if copied == 0 {
+    //     panic("zero copy")
+    // }
 	return Matriz{
 		Largura:   m.Largura,
 		Altura:    m.Altura,
@@ -91,17 +95,34 @@ func (v *Vetor) Set(i int, x float64) {
 func (m Matriz) Print() {
 	for i := range m.Altura {
 		for j := range m.Largura {
-			fmt.Printf("%f ", m.Get(i, j))
+			fmt.Printf("%10f ", m.Get(i, j))
 		}
 		fmt.Println()
 	}
 	fmt.Println()
 }
 
-func (m Matriz) Inverso() Matriz {
+// para debug
+func Eq(a, b Matriz) bool {
+	if a.Largura != b.Largura || a.Altura != b.Altura {
+		return false
+	}
+	for i := range a.Largura * a.Altura {
+		if a.elementos[i] != b.elementos[i] {
+			return false
+		}
+	}
+	return true
+}
+
+func (m *Matriz) Inverso() Matriz {
 	resultado := m.Copia()
 	for i := range m.Altura * m.Largura {
-		resultado.elementos[i] = 1 / resultado.elementos[i]
+        x := 1 / m.elementos[i]
+        if x == math.Inf(1) {
+            panic("divisão por 0")
+        }
+		resultado.elementos[i] = x
 	}
 	return resultado
 }
@@ -109,9 +130,9 @@ func (m Matriz) Inverso() Matriz {
 // multiplicação de matrizes
 func (a Matriz) ProdEscalar(b Matriz) Matriz {
 	if a.Largura != b.Altura {
-		log.Panic(
-			"numero de colunas da matriz A é diferente do numero do" +
-				"numero de linhas da matriz B")
+		log.Panicf(
+			"numero de colunas da matriz A é diferente do numero " +
+            "de linhas da matriz B: %d != %d\n", a.Largura, b.Altura)
 	}
 	resultado := NovaMatrizVazia(b.Largura, a.Altura)
 	for i := range resultado.Altura {
@@ -128,24 +149,42 @@ func (a Matriz) ProdEscalar(b Matriz) Matriz {
 	return resultado
 }
 
-func (a Vetor) Sub(b Vetor) Vetor {
-	if a.Altura != b.Altura {
-		log.Panic("tamanho de vetor A é diferente do tamanho do vetor B")
+// subtração de matrizes
+func (a Matriz) Sub(b Matriz) Matriz {
+	if len(a.elementos) != len(b.elementos) {
+		log.Panic("tamanho de matriz A é diferente do tamanho do matriz B")
 	}
-	resultado := NovoVetor(a.elementos)
-	for i := range a.Altura {
-		resultado.Set(i, a.Get(i)-b.Get(i))
+	resultado := NovaMatrizVazia(a.Largura, a.Altura)
+
+	for i := range a.Altura * a.Largura {
+		resultado.elementos[i] = a.elementos[i] - b.elementos[i]
 	}
 	return resultado
 }
 
-func ParseFloat64(value string) float64 {
-	parsedValue, err := strconv.ParseFloat(value, 64)
-	if err != nil {
-		// Se falhar, retorna 0
-		return 0
+// soma de matrizes
+func (a Matriz) Sum(b Matriz) Matriz {
+	if len(a.elementos) != len(b.elementos) {
+		log.Panic("tamanho de matriz A é diferente do tamanho do matriz B")
 	}
-	return parsedValue
+	resultado := NovaMatrizVazia(a.Largura, a.Altura)
+
+	for i := range a.Altura * a.Largura {
+		resultado.elementos[i] = a.elementos[i] + b.elementos[i]
+	}
+	return resultado
+}
+
+func (a Matriz) T() Matriz {
+    resultado := a.Copia()
+    for i := range a.Altura {
+        for j := range a.Largura {
+            temp := resultado.Get(i,j)
+            resultado.Set(i,j, resultado.Get(j,i))
+            resultado.Set(j,i, temp)
+        }
+    }
+    return resultado
 }
 
 func mustAtoi(s string) int {
